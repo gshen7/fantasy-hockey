@@ -11,7 +11,7 @@ sPointsCum<-list()
 gPointsCum<-list()
 
 # TODO automatically get current day - starting day
-currentPeriod<-97
+currentPeriod<-98
 
 for(teamId in 1:11){
   s<-NA
@@ -63,7 +63,7 @@ for(team in 1:11){
 }
 
 # updater
-newPeriod<-98
+newPeriod<-104
 for(teamId in 1:11){
   s<-NA
   g<-NA
@@ -114,8 +114,12 @@ for(team in 1:11){
 # plotter
 COLOURS<-c("#f44242", "#f4a941", "#f2ec3e", "#259b31", "#4fc1ea", "#1627a3", "#aa76f7", "#ed5ac8", "black", "grey", "brown")
 TEAMS<-c("Devin", "Matt", "Evan", "Dave", "Brett", "Jory", "Gary", "Carl", "Kyle", "Ryan", "Tanner")
-plot(1:length(sPointsCum[[1]]), sPointsCum[[1]]+gPointsCum[[1]], type="l", col=COLOURS[1],xlim=c(0,100),ylim=c(0,3000))
+plot(1:length(sPointsCum[[1]]), sPointsCum[[1]]+gPointsCum[[1]], type="l", col=COLOURS[1],xlim=c(0,110),ylim=c(0,3000))
 for(team in 2:11){
   lines(1:length(sPointsCum[[team]]), sPointsCum[[team]]+gPointsCum[[team]], type="l", col=COLOURS[team])
 }
 legend(0, 3000, legend=TEAMS, col=COLOURS, lty=1, cex=0.8)
+
+# save to excel
+
+# load from excel
