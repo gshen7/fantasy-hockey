@@ -10,7 +10,6 @@ gPoints<-list()
 sPointsCum<-list()
 gPointsCum<-list()
 
-# TODO automatically get current day - starting day
 currentPeriod<-98
 
 for(teamId in 1:11){
@@ -119,7 +118,3 @@ for(team in 2:11){
   lines(1:length(sPointsCum[[team]]), sPointsCum[[team]]+gPointsCum[[team]], type="l", col=COLOURS[team])
 }
 legend(0, 3000, legend=TEAMS, col=COLOURS, lty=1, cex=0.8)
-
-# save to excel
-
-# load from excel

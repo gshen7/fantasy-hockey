@@ -1,5 +1,6 @@
 ## TODO
 * Save and load to excel or database
+* better way of updating the data
 * Use plumber
 * tools like automatic lineup setting, automatic streaming
 * tie in with hockey models for projections, etc...
