@@ -14,17 +14,10 @@ initialize <- function(period=10){
 
   period<-as.numeric(period)
   
-  pointsTotal <- data.frame(matrix(nrow=period+1, ncol=1))
-  pointsSkater <- data.frame(matrix(nrow=period+1, ncol=1))
-  pointsGoalie <- data.frame(matrix(nrow=period+1, ncol=1))
-  
-  colnames(pointsTotal)<-c("day")
-  colnames(pointsSkater)<-c("day")
-  colnames(pointsGoalie)<-c("day")
-  
-  pointsTotal$day <- 0:period
-  pointsSkater$day <- 0:period
-  pointsGoalie$day <- 0:period
+  days <- data.frame(matrix(nrow=period+1,ncol=1))
+  pointsTotal <- data.frame(matrix(nrow=period+1, ncol=0))
+  pointsSkater <- data.frame(matrix(nrow=period+1, ncol=0))
+  pointsGoalie <- data.frame(matrix(nrow=period+1, ncol=0))
   
   for(team in 1:11){
     pointsTotal <- cbind(pointsTotal,NA)
@@ -32,10 +25,12 @@ initialize <- function(period=10){
     pointsGoalie<- cbind(pointsGoalie,NA)
   }
   
-  colnames(pointsTotal)<-c("day",paste(TEAMS,"t",sep="-"))
-  colnames(pointsSkater)<-c("day",paste(TEAMS,"s",sep="-"))
-  colnames(pointsGoalie)<-c("day",paste(TEAMS,"g",sep="-"))
+  colnames(days)<-c("day")
+  colnames(pointsTotal)<-paste(TEAMS,"t",sep="-")
+  colnames(pointsSkater)<-paste(TEAMS,"s",sep="-")
+  colnames(pointsGoalie)<-paste(TEAMS,"g",sep="-")
   
+  days <- 0:period
   pointsTotal[1,] <- c(0)
   pointsSkater[1,] <- c(0)
   pointsGoalie[1,] <- c(0)
@@ -69,19 +64,19 @@ initialize <- function(period=10){
       skatersTotals<-skatersTotals[,-(c(1:2,(ncol(skatersTotals)-3):ncol(skatersTotals)))]
       colnames(skatersTotals)[1:2]<-""
       # skatersTotals[1,]$PTS
-      pointsSkater[scoringPeriod+1,teamId+1]<-as.numeric(skatersTotals[1,]$PTS)+as.numeric(pointsSkater[scoringPeriod,teamId+1])
+      pointsSkater[scoringPeriod+1,teamId]<-as.numeric(skatersTotals[1,]$PTS)+as.numeric(pointsSkater[scoringPeriod,teamId])
       
       goaliesTotals<-goalies[goalies$SLOT == "",]
       colnames(goaliesTotals)<-colnames(goaliesTotals)[-(1:2)]
       goaliesTotals<-goaliesTotals[,-(c(1:2,(ncol(goaliesTotals)-3):ncol(goaliesTotals)))]
       colnames(goaliesTotals)[1:2]<-""
       # goaliesTotals[1,]$PTS
-      pointsGoalie[scoringPeriod+1,teamId+1]<-as.numeric(goaliesTotals[1,]$PTS)+as.numeric(pointsGoalie[scoringPeriod,teamId+1])
+      pointsGoalie[scoringPeriod+1,teamId]<-as.numeric(goaliesTotals[1,]$PTS)+as.numeric(pointsGoalie[scoringPeriod,teamId])
       
-      pointsTotal[scoringPeriod+1,teamId+1]<-pointsSkater[scoringPeriod+1,teamId+1]+pointsGoalie[scoringPeriod+1,teamId+1]
+      pointsTotal[scoringPeriod+1,teamId]<-pointsSkater[scoringPeriod+1,teamId]+pointsGoalie[scoringPeriod+1,teamId]
     }
   }
-  data <- cbind(pointsTotal, pointsSkater, pointsGoalie)
+  data <- cbind(days, pointsTotal, pointsSkater, pointsGoalie)
   fBackup(period)
   fSave(data)
   
@@ -98,16 +93,18 @@ update <- function(newPeriod=10){
   newPeriod<-as.numeric(newPeriod)
   
   data <- fLoad()
-  pointsTotal <- data[,1:12]
-  pointsSkater <- data[,13:24]
-  pointsGoalie <- data[,25:36]
+  days <- data[,1]
+  pointsTotal <- data[,2:12]
+  pointsSkater <- data[,13:23]
+  pointsGoalie <- data[,24:34]
   
   currentPeriod <- nrow(pointsTotal)-1
   
   for(scoringPeriod in (currentPeriod+1):newPeriod){
-    pointsTotal <- rbind(pointsTotal,c(scoringPeriod, NA))
-    pointsSkater <- rbind(pointsSkater,c(scoringPeriod, NA))
-    pointsGoalie <- rbind(pointsGoalie,c(scoringPeriod, NA))
+    days <- rbind(rbind,scoringPeriod)
+    pointsTotal <- rbind(pointsTotal,NA)
+    pointsSkater <- rbind(pointsSkater,NA)
+    pointsGoalie <- rbind(pointsGoalie,NA)
     
     for(teamId in 1:11){    
       url <- paste("http://games.espn.com/fhl/clubhouse?leagueId=34619&teamId=",teamId,"&seasonId=2018&scoringPeriodId=", scoringPeriod, sep="")
@@ -137,19 +134,19 @@ update <- function(newPeriod=10){
       skatersTotals<-skatersTotals[,-(c(1:2,(ncol(skatersTotals)-3):ncol(skatersTotals)))]
       colnames(skatersTotals)[1:2]<-""
       # skatersTotals[1,]$PTS
-      pointsSkater[scoringPeriod+1,teamId+1]<-as.numeric(skatersTotals[1,]$PTS)+as.numeric(pointsSkater[scoringPeriod,teamId+1])
+      pointsSkater[scoringPeriod+1,teamId]<-as.numeric(skatersTotals[1,]$PTS)+as.numeric(pointsSkater[scoringPeriod,teamId])
       
       goaliesTotals<-goalies[goalies$SLOT == "",]
       colnames(goaliesTotals)<-colnames(goaliesTotals)[-(1:2)]
       goaliesTotals<-goaliesTotals[,-(c(1:2,(ncol(goaliesTotals)-3):ncol(goaliesTotals)))]
       colnames(goaliesTotals)[1:2]<-""
       # goaliesTotals[1,]$PTS
-      pointsGoalie[scoringPeriod+1,teamId+1]<-as.numeric(goaliesTotals[1,]$PTS)+as.numeric(pointsGoalie[scoringPeriod,teamId+1])
+      pointsGoalie[scoringPeriod+1,teamId]<-as.numeric(goaliesTotals[1,]$PTS)+as.numeric(pointsGoalie[scoringPeriod,teamId])
       
-      pointsTotal[scoringPeriod+1,teamId+1]<-pointsSkater[scoringPeriod+1,teamId+1]+pointsGoalie[scoringPeriod+1,teamId+1]
+      pointsTotal[scoringPeriod+1,teamId]<-pointsSkater[scoringPeriod+1,teamId]+pointsGoalie[scoringPeriod+1,teamId]
     }
   }  
-  data <- c(pointsTotal, pointsSkater, pointsGoalie)
+  data <- c(days, pointsTotal, pointsSkater, pointsGoalie)
   fBackup(newPeriod)
   fSave(data)
   
