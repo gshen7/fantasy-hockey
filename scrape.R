@@ -10,7 +10,7 @@ gPoints<-list()
 sPointsCum<-list()
 gPointsCum<-list()
 
-currentPeriod<-98
+currentPeriod<-164
 
 for(teamId in 1:11){
   s<-NA
@@ -62,7 +62,7 @@ for(team in 1:11){
 }
 
 # updater
-newPeriod<-104
+newPeriod <- 
 for(teamId in 1:11){
   s<-NA
   g<-NA
