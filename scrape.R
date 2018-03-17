@@ -32,9 +32,9 @@ initialize <- function(period=10){
     pointsGoalie<- cbind(pointsGoalie,NA)
   }
   
-  colnames(pointsTotal)<-c("day",TEAMS)
-  colnames(pointsSkater)<-c("day",TEAMS)
-  colnames(pointsGoalie)<-c("day",TEAMS)
+  colnames(pointsTotal)<-c("day",paste(TEAMS,"t",sep="-"))
+  colnames(pointsSkater)<-c("day",paste(TEAMS,"s",sep="-"))
+  colnames(pointsGoalie)<-c("day",paste(TEAMS,"g",sep="-"))
   
   pointsTotal[1,] <- c(0)
   pointsSkater[1,] <- c(0)
