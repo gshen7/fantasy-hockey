@@ -1,5 +1,3 @@
-# scrape.R
-
 # install.packages("rvest")
 # install.packages("XML")
 
@@ -19,7 +17,7 @@ initialize <- function(period=10){
   pointsSkater <- data.frame(matrix(nrow=period+1, ncol=0))
   pointsGoalie <- data.frame(matrix(nrow=period+1, ncol=0))
   
-  for(team in 1:11){
+  for(team in 1:length(TEAMS)){
     pointsTotal <- cbind(pointsTotal,NA)
     pointsSkater<- cbind(pointsSkater,NA)
     pointsGoalie<- cbind(pointsGoalie,NA)
@@ -36,7 +34,7 @@ initialize <- function(period=10){
   pointsGoalie[1,] <- c(0)
   
   for(scoringPeriod in 1:period){
-    for(teamId in 1:11){
+    for(teamId in 1:length(TEAMS)){
       url <- paste("http://games.espn.com/fhl/clubhouse?leagueId=34619&teamId=",teamId,"&seasonId=2018&scoringPeriodId=", scoringPeriod, sep="")
     
       day <- read_html(url)
@@ -77,8 +75,8 @@ initialize <- function(period=10){
     }
   }
   data <- cbind(days, pointsTotal, pointsSkater, pointsGoalie)
-  fBackup(period)
   fSave(data)
+  fBackup(period)
   
   paste("initialized to scoring period ", period)
 }
@@ -106,7 +104,7 @@ update <- function(newPeriod=10){
     pointsSkater <- rbind(pointsSkater,NA)
     pointsGoalie <- rbind(pointsGoalie,NA)
     
-    for(teamId in 1:11){    
+    for(teamId in 1:length(TEAMS)){    
       url <- paste("http://games.espn.com/fhl/clubhouse?leagueId=34619&teamId=",teamId,"&seasonId=2018&scoringPeriodId=", scoringPeriod, sep="")
       
       day <- read_html(url)
@@ -147,8 +145,8 @@ update <- function(newPeriod=10){
     }
   }  
   data <- c(days, pointsTotal, pointsSkater, pointsGoalie)
-  fBackup(newPeriod)
   fSave(data)
+  fBackup(newPeriod)
   
   paste("updated to scoring period ", newPeriod)
 }
