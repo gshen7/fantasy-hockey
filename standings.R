@@ -99,7 +99,7 @@ update <- function(newPeriod=10){
   currentPeriod <- nrow(pointsTotal)-1
   
   for(scoringPeriod in (currentPeriod+1):newPeriod){
-    days <- rbind(rbind,scoringPeriod)
+    days <- c(days,scoringPeriod)
     pointsTotal <- rbind(pointsTotal,NA)
     pointsSkater <- rbind(pointsSkater,NA)
     pointsGoalie <- rbind(pointsGoalie,NA)
@@ -144,7 +144,7 @@ update <- function(newPeriod=10){
       pointsTotal[scoringPeriod+1,teamId]<-pointsSkater[scoringPeriod+1,teamId]+pointsGoalie[scoringPeriod+1,teamId]
     }
   }  
-  data <- c(days, pointsTotal, pointsSkater, pointsGoalie)
+  data <- cbind(days, pointsTotal, pointsSkater, pointsGoalie)
   fSave(data)
   fBackup(newPeriod)
   
